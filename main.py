@@ -438,11 +438,11 @@ async def send_logs(client: Client, m: Message):  # Correct parameter name
 
 @bot.on_message(filters.command(["drm"]) )
 async def txt_handler(bot: Client, m: Message):  
-    #if m.chat.id not in AUTH_USERS and m.chat.id not in CHANNELS_LIST:
-        #print(f"User ID not in AUTH_USERS", m.chat.id)
-        #print(f"Channel ID not in CHANNELS_LIST", m.chat.id)
-        #await m.reply_text(f"__**Oops, you are not authorized to use this command**__")
-        #return
+    if m.chat.id not in AUTH_USERS and m.chat.id not in CHANNELS_LIST:
+        print(f"User ID not in AUTH_USERS", m.chat.id)
+        print(f"Channel ID not in CHANNELS_LIST", m.chat.id)
+        await m.reply_text(f"__**Oops, you are not authorized to use this command**__")
+        return
     editable = await m.reply_text(f"**🔹Hi I am Poweful TXT Downloader📥 Bot.\n🔹Send me the txt file and wait.**")
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
