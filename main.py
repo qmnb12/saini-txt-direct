@@ -810,7 +810,9 @@ async def txt_handler(bot: Client, m: Message):
                 url = url.split('*')[0]
 
             if "youtu" in url:
-                ytf = (f"bestvideo[ext=mp4][height<={raw_text2}]+bestaudio[ext=m4a]/"
+                ytf = (f"bv*[ext=mp4][height<={raw_text2}]+ba[ext=m4a]/"
+                       f"bv*[height<={raw_text2}]+ba/"
+                       f"bestvideo[ext=mp4][height<={raw_text2}]+bestaudio[ext=m4a]/"
                        f"bestvideo[height<={raw_text2}]+bestaudio/"
                        f"best[height<={raw_text2}]"
                       )
@@ -1090,7 +1092,9 @@ async def text_handler(bot: Client, m: Message):
                 url = url.split('*')[0]
 
             if "youtu" in url:
-                ytf = (f"bestvideo[ext=mp4][height<={raw_text2}]+bestaudio[ext=m4a]/"
+                ytf = (f"bv*[ext=mp4][height<={raw_text2}]+ba[ext=m4a]/"
+                       f"bv*[height<={raw_text2}]+ba/"
+                       f"bestvideo[ext=mp4][height<={raw_text2}]+bestaudio[ext=m4a]/"
                        f"bestvideo[height<={raw_text2}]+bestaudio/"
                        f"best[height<={raw_text2}]"
                       )
