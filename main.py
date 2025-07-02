@@ -39,24 +39,6 @@ import zipfile
 import shutil
 import ffmpeg
 
-def get_video_resolution(file_path):
-    try:
-        cmd = [
-            "ffprobe", "-v", "error",
-            "-select_streams", "v:0",
-            "-show_entries", "stream=width,height",
-            "-of", "json",
-            file_path
-        ]
-        output = subprocess.check_output(cmd).decode()
-        info = json.loads(output)
-        width = info["streams"][0]["width"]
-        height = info["streams"][0]["height"]
-        return f"{width}x{height}"
-    except Exception:
-        return "UN"
-
-
 # Initialize the bot
 bot = Client(
     "bot",
@@ -666,28 +648,16 @@ async def txt_handler(bot: Client, m: Message):
     try:
         if raw_text2 == "144":
             res = "256x144"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "240":
             res = "426x240"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "360":
             res = "640x360"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "480":
             res = "854x480"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "720":
             res = "1280x720"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "1080":
-            res = "1920x1080"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4") 
+            res = "1920x1080" 
         else: 
             res = "UN"
     except Exception:
@@ -840,10 +810,7 @@ async def txt_handler(bot: Client, m: Message):
                 url = url.split('*')[0]
 
             if "youtu" in url:
-                ytf = (f"bestvideo[ext=mp4][height<={raw_text2}]+bestaudio[ext=m4a]/"
-                       f"bestvideo[height<={raw_text2}]+bestaudio/"
-                       f"best[height<={raw_text2}]"
-                      )
+                ytf = f"bv*[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[height<=?{raw_text2}]"
             elif "embed" in url:
                 ytf = f"bestvideo[height<={raw_text2}]+bestaudio/best[height<={raw_text2}]"
             else:
@@ -859,12 +826,12 @@ async def txt_handler(bot: Client, m: Message):
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
-                cc = f'[🎥]Vid Id : {str(count).zfill(3)}\n**Video Title :** `{name1} [{res}p].mp4`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
-                cc1 = f'[📕]Pdf Id : {str(count).zfill(3)}\n**File Title :** `{name1}.pdf`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
-                cczip = f'[📁]Zip Id : {str(count).zfill(3)}\n**Zip Title :** `{name1}.zip`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n' 
-                ccimg = f'[🖼️]Img Id : {str(count).zfill(3)}\n**Img Title :** `{name1}.jpg`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
-                ccm = f'[🎵]Audio Id : {str(count).zfill(3)}\n**Audio Title :** `{name1}.mp3`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
-                cchtml = f'[🌐]Html Id : {str(count).zfill(3)}\n**Html Title :** `{name1}.html`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
+                cc = f'[🎥]Vid Id : {str(count).zfill(3)}\n**Video Title :** `{name1} [{res}p] .mkv`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
+                cc1 = f'[📕]Pdf Id : {str(count).zfill(3)}\n**File Title :** `{name1} .pdf`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
+                cczip = f'[📁]Zip Id : {str(count).zfill(3)}\n**Zip Title :** `{name1} .zip`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n' 
+                ccimg = f'[🖼️]Img Id : {str(count).zfill(3)}\n**Img Title :** `{name1} .jpg`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
+                ccm = f'[🎵]Audio Id : {str(count).zfill(3)}\n**Audio Title :** `{name1} .mp3`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
+                cchtml = f'[🌐]Html Id : {str(count).zfill(3)}\n**Html Title :** `{name1} .html`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
                   
                 if "drive" in url:
                     try:
@@ -995,7 +962,7 @@ async def txt_handler(bot: Client, m: Message):
                     await prog.delete(True)
                     await helper.send_vid(bot, m, cc, filename, thumb, name, prog, channel_id)
                     count += 1
-                    time.sleep(15)
+                    time.sleep(1)
                 
             except Exception as e:
                 await bot.send_message(channel_id, f'⚠️**Downloading Failed**⚠️\n**Name** =>> `{str(count).zfill(3)} {name1}`\n**Url** =>> {url}\n\n<blockquote><i><b>Failed Reason: {str(e)}</b></i></blockquote>', disable_web_page_preview=True)
@@ -1040,28 +1007,16 @@ async def text_handler(bot: Client, m: Message):
     try:
         if raw_text2 == "144":
             res = "256x144"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "240":
             res = "426x240"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "360":
             res = "640x360"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "480":
             res = "854x480"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "720":
             res = "1280x720"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "1080":
-            res = "1920x1080"
-            if os.path.exists(f"{name}.mp4"):
-                res = get_video_resolution(f"{name}.mp4") 
+            res = "1920x1080" 
         else: 
             res = "UN"
     except Exception:
@@ -1132,10 +1087,7 @@ async def text_handler(bot: Client, m: Message):
                 url = url.split('*')[0]
 
             if "youtu" in url:
-                ytf = (f"bestvideo[ext=mp4][height<={raw_text2}]+bestaudio[ext=m4a]/"
-                       f"bestvideo[height<={raw_text2}]+bestaudio/"
-                       f"best[height<={raw_text2}]"
-                      )
+                ytf = f"bv*[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[height<=?{raw_text2}]"
             elif "embed" in url:
                 ytf = f"bestvideo[height<={raw_text2}]+bestaudio/best[height<={raw_text2}]"
             else:
