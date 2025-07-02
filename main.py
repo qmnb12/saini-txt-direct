@@ -17,6 +17,19 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
 from logs import logging
+
+import re
+
+def extract_resolution_from_log(ffmpeg_log: str) -> str:
+    try:
+        match = re.search(r'Video:.*?,.*?, (\d{3,4})x(\d{3,4})', ffmpeg_log)
+        if match:
+            width, height = match.groups()
+            return f"{width}x{height}p"
+    except Exception as e:
+        print("Resolution parsing failed:", e)
+    return "UNp"
+
 from bs4 import BeautifulSoup
 import saini as helper
 from utils import progress_bar
@@ -38,24 +51,6 @@ import aiofiles
 import zipfile
 import shutil
 import ffmpeg
-
-def get_video_resolution(file_path):
-    try:
-        cmd = [
-            "ffprobe", "-v", "error",
-            "-select_streams", "v:0",
-            "-show_entries", "stream=width,height",
-            "-of", "json",
-            file_path
-        ]
-        output = subprocess.check_output(cmd).decode()
-        info = json.loads(output)
-        width = info["streams"][0]["width"]
-        height = info["streams"][0]["height"]
-        return f"{width}x{height}"
-    except Exception:
-        return "UN"
-
 
 # Initialize the bot
 bot = Client(
@@ -666,28 +661,16 @@ async def txt_handler(bot: Client, m: Message):
     try:
         if raw_text2 == "144":
             res = "256x144"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "240":
             res = "426x240"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "360":
             res = "640x360"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "480":
             res = "854x480"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "720":
             res = "1280x720"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "1080":
-            res = "1920x1080"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4") 
+            res = "1920x1080" 
         else: 
             res = "UN"
     except Exception:
@@ -1037,28 +1020,16 @@ async def text_handler(bot: Client, m: Message):
     try:
         if raw_text2 == "144":
             res = "256x144"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "240":
             res = "426x240"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "360":
             res = "640x360"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "480":
             res = "854x480"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "720":
             res = "1280x720"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4")
         elif raw_text2 == "1080":
-            res = "1920x1080"
-        if os.path.exists(f"{name}.mp4"):
-            res = get_video_resolution(f"{name}.mp4") 
+            res = "1920x1080" 
         else: 
             res = "UN"
     except Exception:
