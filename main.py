@@ -895,7 +895,7 @@ async def txt_handler(bot: Client, m: Message):
                 elif ".ws" in url and  url.endswith(".ws"):
                     try:
                         await helper.pdf_download(f"{api_url}utkash-ws?url={url}&authorization={api_token}",f"{name}.html")
-                        time.sleep(1)
+                        await asyncio.sleep(1)
                         await bot.send_document(chat_id=channel_id, document=f"{name}.html", caption=cchtml)
                         os.remove(f'{name}.html')
                         count += 1
@@ -959,10 +959,11 @@ async def txt_handler(bot: Client, m: Message):
                     prog = await bot.send_message(channel_id, Show, disable_web_page_preview=True)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
+                    await asyncio.sleep(20)  # Anti-ban pause
                     await prog.delete(True)
                     await helper.send_vid(bot, m, cc, filename, thumb, name, prog, channel_id)
                     count += 1
-                    time.sleep(1)
+                    await asyncio.sleep(1)
                 
             except Exception as e:
                 await bot.send_message(channel_id, f'⚠️**Downloading Failed**⚠️\n**Name** =>> `{str(count).zfill(3)} {name1}`\n**Url** =>> {url}\n\n<blockquote><i><b>Failed Reason: {str(e)}</b></i></blockquote>', disable_web_page_preview=True)
@@ -972,7 +973,7 @@ async def txt_handler(bot: Client, m: Message):
 
     except Exception as e:
         await m.reply_text(e)
-        time.sleep(2)
+        await asyncio.sleep(2)
 
     success_count = len(links) - failed_count
     video_count = v2_count + mpd_count + m3u8_count + yt_count + drm_count + zip_count + other_count
@@ -1227,9 +1228,10 @@ async def text_handler(bot: Client, m: Message):
                     prog = await m.reply_text(Show, disable_web_page_preview=True)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
+                    await asyncio.sleep(20)  # Anti-ban pause
                     await prog.delete(True)
                     await helper.send_vid(bot, m, cc, filename, thumb, name, prog, channel_id)
-                    time.sleep(1)
+                    await asyncio.sleep(1)
 
             except Exception as e:
                     await m.reply_text(f"⚠️𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 𝐈𝐧𝐭𝐞𝐫𝐮𝐩𝐭𝐞𝐝\n\n🔗𝐋𝐢𝐧𝐤 » `{link}`\n\n<blockquote><b><i>⚠️Failed Reason »**__\n{str(e)}</i></b></blockquote>")
