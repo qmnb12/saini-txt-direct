@@ -1,12 +1,12 @@
 services:
   - type: web
     name: saini-txt-direct
-    env: docker
     plan: free
+    env: docker
+    dockerfilePath: Dockerfile
     repo: https://github.com/qmnb12/saini-txt-direct
     branch: main
     autoDeploy: false
-    dockerfilePath: Dockerfile
     envVars:
       - key: BOT_TOKEN
         sync: false
@@ -18,5 +18,7 @@ services:
         sync: false
       - key: CREDIT
         sync: false
+      #- key: WEBHOOK
+        #sync: false
       - key: PORT
-        value: "8000"
+        value: 8000  # Default port value, update if needed
