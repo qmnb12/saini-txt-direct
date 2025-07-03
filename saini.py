@@ -229,7 +229,16 @@ def time_name():
 
 
 async def download_video(url,cmd, name):
-    download_cmd = f'{cmd} -R 25 --fragment-retries 25 --external-downloader aria2c --downloader-args "aria2c: -x 4 -j 4 -k 1M"'
+    download_cmd = (f'{cmd} '
+                    f'--cookies youtube_cookies.txt '
+                    f'--user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" '
+                    f'--throttled-rate 100K '
+                    f'--sleep-requests 10 '
+                    f'--fragment-retries 25 '
+                    f'--retries 25 '
+                    f'--external-downloader aria2c '
+                    f'--downloader-args "aria2c: -x 4 -j 4 -k 1M"'
+                   )
     global failed_counter
     print(download_cmd)
     logging.info(download_cmd)
