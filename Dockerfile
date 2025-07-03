@@ -40,5 +40,5 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Expose port for Render
 EXPOSE 8000
 
-# Run the app (only one foreground process allowed on Render)
-CMD ["python3", "main.py"]
+# Set the command to run the application
+CMD ["sh", "-c", "gunicorn app:app & python3 main.py"]
