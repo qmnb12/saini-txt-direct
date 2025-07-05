@@ -959,6 +959,7 @@ async def txt_handler(bot: Client, m: Message):
                     prog = await bot.send_message(channel_id, Show, disable_web_page_preview=True)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
+                    await asyncio.sleep(10)  # Anti-ban pause
                     await prog.delete(True)
                     await helper.send_vid(bot, m, cc, filename, thumb, name, prog, channel_id)
                     count += 1
