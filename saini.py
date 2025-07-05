@@ -302,55 +302,27 @@ async def download_and_decrypt_video(url, cmd, name, key):
             return None  
 
 async def send_vid(bot: Client, m: Message, cc, filename, thumb, name, prog, channel_id):
-    # Try generating a thumbnail
+    subprocess.run(f'ffmpeg -i "{filename}" -ss 00:00:10 -vframes 1 "{filename}.jpg"', shell=True)
+    await prog.delete (True)
+    reply1 = await bot.send_message(channel_id, f"**📩 Uploading Video 📩:-**\n<blockquote>**{name}**</blockquote>")
+    reply = await m.reply_text(f"**Generate Thumbnail:**\n<blockquote>**{name}**</blockquote>")
     try:
-        subprocess.run(
-            f'ffmpeg -analyzeduration 2147483647 -probesize 2147483647 -pix_fmt yuv420p -i "{filename}" -ss 00:00:10 -vframes 1 "{filename}.jpg"',
-            shell=True,
-            check=True
-        )
-        thumbnail = f"{filename}.jpg"
+        if thumb == "/d":
+            thumbnail = f"{filename}.jpg"
+        else:
+            thumbnail = thumb
+            
     except Exception as e:
-        print(f"Thumbnail generation failed: {e}")
-        thumbnail = None  # fallback if thumbnail fails
-
-    await prog.delete(True)
-    reply1 = await bot.send_message(channel_id, f"📩 Uploading Video:
-<blockquote>{name}</blockquote>")
-    reply = await m.reply_text(f"Generating thumbnail:
-<blockquote>{name}</blockquote>")
-
+        await m.reply_text(str(e))
+      
     dur = int(duration(filename))
     start_time = time.time()
 
     try:
-        await bot.send_video(
-            channel_id,
-            filename,
-            caption=cc,
-            supports_streaming=True,
-            height=720,
-            width=1280,
-            thumb=thumbnail if thumbnail and os.path.exists(thumbnail) else None,
-            duration=dur,
-            progress=progress_bar,
-            progress_args=(reply, start_time)
-        )
-    except Exception as e:
-        print(f"Sending video failed with thumbnail. Trying as document. Error: {e}")
-        await bot.send_document(
-            channel_id,
-            filename,
-            caption=cc,
-            progress=progress_bar,
-            progress_args=(reply, start_time)
-        )
-
+        await bot.send_video(channel_id, filename, caption=cc, supports_streaming=True, height=720, width=1280, thumb=thumbnail, duration=dur, progress=progress_bar, progress_args=(reply, start_time))
+    except Exception:
+        await bot.send_document(channel_id, filename, caption=cc, progress=progress_bar, progress_args=(reply, start_time))
+    os.remove(filename)
     await reply.delete(True)
     await reply1.delete(True)
-    try:
-        os.remove(filename)
-    except FileNotFoundError:
-        pass
-    if thumbnail and os.path.exists(thumbnail):
-        os.remove(thumbnail)
+    os.remove(f"{filename}.jpg")
