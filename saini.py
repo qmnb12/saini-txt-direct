@@ -229,16 +229,7 @@ def time_name():
 
 
 async def download_video(url,cmd, name):
-    download_cmd = (f'{cmd} '
-                    f'--cookies youtube_cookies.txt '
-                    f'--user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" '
-                    f'--throttled-rate 100K '
-                    f'--sleep-requests 10 '
-                    f'--fragment-retries 25 '
-                    f'--retries 25 '
-                    f'--external-downloader aria2c '
-                    f'--downloader-args "aria2c: -x 4 -j 4 -k 1M"'
-                   )
+    download_cmd = f'{cmd} -R 25 --fragment-retries 25 --external-downloader aria2c --downloader-args "aria2c: -x 16 -j 32"'
     global failed_counter
     print(download_cmd)
     logging.info(download_cmd)
@@ -268,14 +259,14 @@ async def download_video(url,cmd, name):
 
 async def send_doc(bot: Client, m: Message, cc, ka, cc1, prog, count, name, channel_id):
     reply = await bot.send_message(channel_id, f"Downloading pdf:\n<pre><code>{name}</code></pre>")
-    await asyncio.sleep(1)
+    time.sleep(1)
     start_time = time.time()
     await bot.send_document(ka, caption=cc1)
     count+=1
     await reply.delete (True)
-    await asyncio.sleep(1)
+    time.sleep(1)
     os.remove(ka)
-    await asyncio.sleep(3) 
+    time.sleep(3) 
 
 
 def decrypt_file(file_path, key):  
